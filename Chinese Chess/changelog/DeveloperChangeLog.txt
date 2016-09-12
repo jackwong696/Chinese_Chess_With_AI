@@ -1,0 +1,33 @@
+﻿Chinese Chess 
+
+Version 1.0.0.0 [20160903]
+- Project Migration from Old project. [Solve] 
+- Migrate database from ms access to ms sql server. [Solve] 
+
+Version 1.0.0.1 [20160904]
+- Create the database module. [Solve] 
+
+Version 1.0.0.2 [20160909]
+- Create module Pieces picturebox. [In-Progress, Exist (Analyze for for simplicity)] 
+- Table userscore have some strange data. - check where it generated [Solve] 
+- Check datatable source. [Solve]  
+
+Version 1.0.0.3 [20160911] 
+- Disable switch player button (button3) at form 1 startup, enable it after player select color. [Solve]  
+- Add Enum for players turns. [] 
+- Check all the require user control to disable when form 1 start. [Solve] 
+- Change all sql related to use libDbCon. [] 
+
+Version 1.0.0.3 [20160911] 
+-  
+- 
+- 
+
+
+
+
+
+
+
+
+

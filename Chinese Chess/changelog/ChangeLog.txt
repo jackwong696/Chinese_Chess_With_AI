@@ -1,0 +1,24 @@
+﻿Chinese Chess 
+
+Version 1.0.0.0 [20160903] 
+- Project Migration from Old project. 
+- Migrate database from ms access to ms sql server. 
+
+Version 1.0.0.1 [20160904] 
+- Create the database module. 
+
+Version 1.0.0.2 [20160909]
+- Fixed bugs for creation of player.
+- Fixed bugs for table creation. 
+
+Version 1.0.0.3 [201609--]
+- 
+- 
+- 
+
+
+
+
+
+
+

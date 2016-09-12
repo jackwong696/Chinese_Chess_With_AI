@@ -1,0 +1,17 @@
+bin\Debug\ChineseChessDatabase.mdb
+bin\Debug\Chinese Chess.exe.config
+bin\Debug\Chinese Chess.exe
+bin\Debug\Chinese Chess.pdb
+bin\Debug\Chinese Chess.xml
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Chinese_Chess.ChineseChessAboutBox.resources
+obj\Debug\Chinese_Chess.ChineseChessSplashScreen1.resources
+obj\Debug\Chinese_Chess.Form1.resources
+obj\Debug\Chinese_Chess.Form2.resources
+obj\Debug\Chinese_Chess.Resources.resources
+obj\Debug\Chinese Chess.vbproj.GenerateResource.Cache
+obj\Debug\Chinese Chess.exe
+obj\Debug\Chinese Chess.xml
+obj\Debug\Chinese Chess.pdb
+obj\Debug\Chinese_Chess.ProtectedPieceForm.resources
+obj\Debug\Chinese_Chess.AttackOrProtectBy.resources
