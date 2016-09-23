@@ -172,9 +172,9 @@ Line2:          MovePiece()
 
         Dim query As String = ""
         If Me.Turn = "White" Then
-            query = "insert into Record" & tableNumber & "(TableID, [No], [White Movement], [Black Movement]) values ( " & round & ", '" & positionOneTwo & "','')"
+            query = "INSERT INTO Record (TableID, MovementNumber, [White Movement], [Black Movement]) VALUES ( " & tableNumber & ", " & round & ", '" & positionOneTwo & "','') "
         ElseIf Me.Turn = "Black" Then
-            query = "update Record" & tableNumber & " set [Black Movement] = '" & positionOneTwo & "' where [No] = " & round
+            query = "UPDATE Record SET [Black Movement] = '" & positionOneTwo & "' WHERE MovementNumber = " & round & " AND TableID = " & tableNumber
             round = round + 1
         End If
         libDBCon.ExecPostSQL(query, "")
@@ -233,14 +233,18 @@ Line2:          MovePiece()
 
     Private Sub ViewData()
         Dim sqlQuery As String
+        Dim sqlWhere As String
 
-        Dim myconnection As System.Data.SqlClient.SqlConnection
-        Dim myOleCommand As System.Data.SqlClient.SqlCommand
+        sqlQuery = ""
+        sqlWhere = ""
+
+        'Dim myconnection As System.Data.SqlClient.SqlConnection
+        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
 
         'Dim myconnection As OleDb.OleDbConnection
         'Dim myOleCommand As OleDb.OleDbCommand
 
-        Dim dbreader As System.Data.SqlClient.SqlDataReader
+        'Dim dbreader As System.Data.SqlClient.SqlDataReader
         'Dim dbreader As OleDb.OleDbDataReader
         Dim itemAdd As ListViewItem
 
@@ -248,23 +252,36 @@ Line2:          MovePiece()
             Exit Sub
         End If
 
-        myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
+        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
         'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
-        sqlQuery = "select [White Movement], [Black Movement] from record" & tableNumber
+        sqlQuery = " SELECT [White Movement], [Black Movement] FROM Record "
+        sqlWhere = " WHERE TableID = " & tableNumber
+        ' WHERE TableID = " & tableNumber
         'myOleCommand = New OleDb.OleDbCommand(sqlQuery, myconnection)
-        myOleCommand = New System.Data.SqlClient.SqlCommand("select * from Record" & tableNumber, myconnection)
-        myconnection.Open()
-        myOleCommand.ExecuteNonQuery()
+        'myOleCommand = New System.Data.SqlClient.SqlCommand(sqlQuery, myconnection)
+        'myconnection.Open()
+        'myOleCommand.ExecuteNonQuery()
 
         Me.ListView1.Items.Clear()
-        dbreader = myOleCommand.ExecuteReader()
-        While dbreader.Read()
-            itemAdd = Me.ListView1.Items.Add(dbreader("White Movement"))
-            itemAdd.SubItems.Add(dbreader("Black Movement"))
-        End While
-        dbreader.Close()
+        'dbreader = myOleCommand.ExecuteReader()
+        'While dbreader.Read()
+        '    itemAdd = Me.ListView1.Items.Add(dbreader("White Movement"))
+        '    itemAdd.SubItems.Add(dbreader("Black Movement"))
+        '    'Dim row1 As String() = {dbreader("White Movement"), dbreader("Black Movement")}
+        '    'ListView1.Items.Add(dbreader("White Movement")).SubItems.AddRange(row1)
+        '    'ListView1.Items.Add(dbreader("White Movement"))
+        'End While
+        'dbreader.Close()
+        'myconnection.Close()
 
-        myconnection.Close()
+        libDBCon.ExecGetSQL(sqlQuery, sqlWhere)
+        For Each dtr As DataRow In libDBCon.GetGridInfo.Rows
+            'itemAdd = Me.ListView1.Items.Add(libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("White Movement").Ordinal).ToString)
+            'itemAdd.SubItems.Add(libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("Black Movement").Ordinal).ToString)
+            itemAdd = Me.ListView1.Items.Add(dtr.Item(libDBCon.GetGridInfo.Columns("White Movement").Ordinal).ToString())
+            itemAdd.SubItems.Add(dtr.Item(libDBCon.GetGridInfo.Columns("Black Movement").Ordinal).ToString())
+        Next
+
     End Sub
 
     Private Sub GetPositionOne()
@@ -6777,25 +6794,33 @@ Line2:          MovePiece()
         'Dim myOleCommand As OleDb.OleDbCommand
         'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
         'myOleCommand = New OleDb.OleDbCommand("delete * from record", myconnection)
+        Dim sqlQuery = " DELETE * FROM record "
 
-        Dim myconnection As System.Data.SqlClient.SqlConnection
-        Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
-        myOleCommand = New System.Data.SqlClient.SqlCommand("DELETE * FROM record", myconnection)
+        'Dim myconnection As System.Data.SqlClient.SqlConnection
+        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
+        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
+        'myOleCommand = New System.Data.SqlClient.SqlCommand("DELETE * FROM record", myconnection)
+
+        'Try
+        '    'myconnection.Open()
+        '    'myOleCommand.ExecuteNonQuery()
+
+        '    'Me.TextBox1.Text = DatabaseDataSet.Record.field("")
+        '    'MsgBox("delete * from record table in database.")
+        'Catch myException As Exception
+        '    'MsgBox("Couldn't insert record: " + myException.ToString())
+        'Finally
+        '    'MsgBox("closing con")
+        '    'myconnection.Close()
+        'End Try
+        'Me.RecordTableAdapter.Fill(Me.ChineseChessDatabaseDataSet.Record)
 
         Try
-            myconnection.Open()
-            myOleCommand.ExecuteNonQuery()
-
-            'Me.TextBox1.Text = DatabaseDataSet.Record.field("")
-            MsgBox("delete * from record table in database.")
+            libDBCon.ExecPostSQL(sqlQuery, "")
         Catch myException As Exception
             MsgBox("Couldn't insert record: " + myException.ToString())
-        Finally
-            MsgBox("closing con")
-            myconnection.Close()
         End Try
-        'Me.RecordTableAdapter.Fill(Me.ChineseChessDatabaseDataSet.Record)
+
     End Sub
 
     Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
@@ -6832,7 +6857,7 @@ Line2:          MovePiece()
 
         libDBCon.ExecGetSQL("SELECT MAX([Table Number]) AS tableNoMax FROM TableNumber", "")
         'tableNumber = Convert.ToInt32(Me.Table_NumberTextBox.Text) + 1
-        tableNumber = libDBCon.GetGridInfo().Rows(0)(libDBCon.GetGridInfo.Columns("tableNoMax").Ordinal)
+        tableNumber = libDBCon.GetGridInfo().Rows(0)(libDBCon.GetGridInfo.Columns("tableNoMax").Ordinal) + 1
         Table_NumberTextBox.Text = tableNumber.ToString()
 
         libDBCon.ExecPostSQL("INSERT INTO TableNumber ([Table Number]) VALUES (" & tableNumber & ")", "")
@@ -6901,9 +6926,9 @@ Line2:          MovePiece()
 
     Public Sub SavePieceLocation()
 
-        Dim myconnection As System.Data.SqlClient.SqlConnection
-        Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
+        'Dim myconnection As System.Data.SqlClient.SqlConnection
+        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
+        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
 
         'Dim myconnection As OleDb.OleDbConnection
         'Dim myOleCommand As OleDb.OleDbCommand
@@ -6913,11 +6938,11 @@ Line2:          MovePiece()
         'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
 
         If SavePurpose = "saveBeforeShowMA" Then
-            SqlWhere = "' where SaveType = 'saveBeforeShowMA'"
+            SqlWhere = "' WHERE SaveType = 'saveBeforeShowMA' "
         ElseIf SavePurpose = "saveBeforeSimulating" Then
-            SqlWhere = "' where SaveType = 'saveBeforeSimulating'"
+            SqlWhere = "' WHERE SaveType = 'saveBeforeSimulating' "
         End If
-        sqlquery = "update SavePieceLocation set picturebox1 = '" & picturebox(1) & "', picturebox2 = '" & picturebox(2) & "', picturebox3 = '" & picturebox(3) & "', picturebox4 = '" & picturebox(4) & "', picturebox5 = '" & picturebox(5) & "', picturebox6 = '" & picturebox(6) & "', picturebox7 = '" & picturebox(7) & "', picturebox8 = '" & picturebox(8) & "', picturebox9 = '" & picturebox(9) & "', picturebox10 = '" & picturebox(10) &
+        sqlquery = "UPDATE SavePieceLocation SET picturebox1 = '" & picturebox(1) & "', picturebox2 = '" & picturebox(2) & "', picturebox3 = '" & picturebox(3) & "', picturebox4 = '" & picturebox(4) & "', picturebox5 = '" & picturebox(5) & "', picturebox6 = '" & picturebox(6) & "', picturebox7 = '" & picturebox(7) & "', picturebox8 = '" & picturebox(8) & "', picturebox9 = '" & picturebox(9) & "', picturebox10 = '" & picturebox(10) &
         "',picturebox11 = '" & picturebox(11) & "', picturebox12 = '" & picturebox(12) & "', picturebox13 = '" & picturebox(13) & "', picturebox14 = '" & picturebox(14) & "', picturebox15 = '" & picturebox(15) & "', picturebox16 = '" & picturebox(16) & "', picturebox17 = '" & picturebox(17) & "', picturebox18 = '" & picturebox(18) & "', picturebox19 = '" & picturebox(19) & "', picturebox20 = '" & picturebox(20) &
         "',picturebox21 = '" & picturebox(21) & "', picturebox22 = '" & picturebox(22) & "', picturebox23 = '" & picturebox(23) & "', picturebox24 = '" & picturebox(24) & "', picturebox25 = '" & picturebox(25) & "', picturebox26 = '" & picturebox(26) & "', picturebox27 = '" & picturebox(27) & "', picturebox28 = '" & picturebox(28) & "', picturebox29 = '" & picturebox(29) & "', picturebox30 = '" & picturebox(30) &
         "',picturebox31 = '" & picturebox(31) & "', picturebox32 = '" & picturebox(32) & "', picturebox33 = '" & picturebox(33) & "', picturebox34 = '" & picturebox(34) & "', picturebox35 = '" & picturebox(35) & "', picturebox36 = '" & picturebox(36) & "', picturebox37 = '" & picturebox(37) & "', picturebox38 = '" & picturebox(38) & "', picturebox39 = '" & picturebox(39) & "', picturebox40 = '" & picturebox(40) &
@@ -6925,137 +6950,152 @@ Line2:          MovePiece()
         "',picturebox51 = '" & picturebox(51) & "', picturebox52 = '" & picturebox(52) & "', picturebox53 = '" & picturebox(53) & "', picturebox54 = '" & picturebox(54) & "', picturebox55 = '" & picturebox(55) & "', picturebox56 = '" & picturebox(56) & "', picturebox57 = '" & picturebox(57) & "', picturebox58 = '" & picturebox(58) & "', picturebox59 = '" & picturebox(59) & "', picturebox60 = '" & picturebox(60) &
         "',picturebox61 = '" & picturebox(61) & "', picturebox62 = '" & picturebox(62) & "', picturebox63 = '" & picturebox(63) & "', picturebox64 = '" & picturebox(64) & "', picturebox65 = '" & picturebox(65) & "', picturebox66 = '" & picturebox(66) & "', picturebox67 = '" & picturebox(67) & "', picturebox68 = '" & picturebox(68) & "', picturebox69 = '" & picturebox(69) & "', picturebox70 = '" & picturebox(70) &
         "',picturebox71 = '" & picturebox(71) & "', picturebox72 = '" & picturebox(72) & "', picturebox73 = '" & picturebox(73) & "', picturebox74 = '" & picturebox(74) & "', picturebox75 = '" & picturebox(75) & "', picturebox76 = '" & picturebox(76) & "', picturebox77 = '" & picturebox(77) & "', picturebox78 = '" & picturebox(78) & "', picturebox79 = '" & picturebox(79) & "', picturebox80 = '" & picturebox(80) &
-        "',picturebox81 = '" & picturebox(81) & "', picturebox82 = '" & picturebox(82) & "', picturebox83 = '" & picturebox(83) & "', picturebox84 = '" & picturebox(84) & "', picturebox85 = '" & picturebox(85) & "', picturebox86 = '" & picturebox(86) & "', picturebox87 = '" & picturebox(87) & "', picturebox88 = '" & picturebox(88) & "', picturebox89 = '" & picturebox(89) & "', picturebox90 = '" & picturebox(90) & SqlWhere
+        "',picturebox81 = '" & picturebox(81) & "', picturebox82 = '" & picturebox(82) & "', picturebox83 = '" & picturebox(83) & "', picturebox84 = '" & picturebox(84) & "', picturebox85 = '" & picturebox(85) & "', picturebox86 = '" & picturebox(86) & "', picturebox87 = '" & picturebox(87) & "', picturebox88 = '" & picturebox(88) & "', picturebox89 = '" & picturebox(89) & "', picturebox90 = '" & picturebox(90)
+        '& SqlWhere
         'myOleCommand = New OleDb.OleDbCommand(sqlquery, myconnection)
-        myOleCommand = New SqlClient.SqlCommand(sqlquery, myconnection)
+        'myOleCommand = New SqlClient.SqlCommand(sqlquery, myconnection)
         'MsgBox(sqlquery, MsgBoxStyle.OkOnly)
-        myconnection.Open()
-        myOleCommand.ExecuteNonQuery()
-        myconnection.Close()
+        'myconnection.Open()
+        'myOleCommand.ExecuteNonQuery()
+        'myconnection.Close()
+
+        libDBCon.ExecGetSQL(sqlquery, SqlWhere)
+
+
         SavePurpose = ""
     End Sub
     Public Sub RetriveSavePieceLocation()
 
-        Dim myconnection As System.Data.SqlClient.SqlConnection
-        Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
+        'Dim myconnection As System.Data.SqlClient.SqlConnection
+        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
+        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
         'myOleCommand = New System.Data.SqlClient.SqlCommand("DELETE * FROM record", myconnection)
-        Dim dbreader As SqlClient.SqlDataReader
+        'Dim dbreader As SqlClient.SqlDataReader
 
         'Dim myconnection As OleDb.OleDbConnection
         'Dim myOleCommand As OleDb.OleDbCommand
         'Dim dbreader As OleDb.OleDbDataReader
         Dim sqlquery, sqlWhere As String
+        'Dim picCount As Integer = 1
         sqlWhere = ""
         'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
         If RetrieveFrom = "saveBeforeShowMA" Then
-            sqlWhere = "saveBeforeShowMA"
+            sqlWhere = " WHERE SaveType = 'saveBeforeShowMA' "
         ElseIf RetrieveFrom = "saveBeforeSimulating" Then
-            sqlWhere = "saveBeforeSimulating"
+            sqlWhere = " WHERE SaveType = 'saveBeforeSimulating' "
         End If
-        sqlquery = "select * from SavePieceLocation where SaveType = '" & sqlWhere & "'"
-        myOleCommand = New SqlClient.SqlCommand(sqlquery, myconnection)
+        sqlquery = " SELECT * FROM SavePieceLocation "
+        'sqlWhere = " WHERE SaveType = '" & sqlWhere & "'"
+        'myOleCommand = New SqlClient.SqlCommand(sqlquery, myconnection)
         'myOleCommand = New OleDb.OleDbCommand(sqlquery, myconnection)
-        myconnection.Open()
-        myOleCommand.ExecuteNonQuery()
-        dbreader = myOleCommand.ExecuteReader()
-        If dbreader.HasRows Then
-            While dbreader.Read()
-                Me.picturebox(1) = dbreader("Picturebox1")
-                Me.picturebox(2) = dbreader("Picturebox2")
-                Me.picturebox(3) = dbreader("Picturebox3")
-                Me.picturebox(4) = dbreader("Picturebox4")
-                Me.picturebox(5) = dbreader("Picturebox5")
-                Me.picturebox(6) = dbreader("Picturebox6")
-                Me.picturebox(7) = dbreader("Picturebox7")
-                Me.picturebox(8) = dbreader("Picturebox8")
-                Me.picturebox(9) = dbreader("Picturebox9")
-                Me.picturebox(10) = dbreader("Picturebox10")
-                Me.picturebox(11) = dbreader("Picturebox11")
-                Me.picturebox(12) = dbreader("Picturebox12")
-                Me.picturebox(13) = dbreader("Picturebox13")
-                Me.picturebox(14) = dbreader("Picturebox14")
-                Me.picturebox(15) = dbreader("Picturebox15")
-                Me.picturebox(16) = dbreader("Picturebox16")
-                Me.picturebox(17) = dbreader("Picturebox17")
-                Me.picturebox(18) = dbreader("Picturebox18")
-                Me.picturebox(19) = dbreader("Picturebox19")
-                Me.picturebox(20) = dbreader("Picturebox20")
-                Me.picturebox(21) = dbreader("Picturebox21")
-                Me.picturebox(22) = dbreader("Picturebox22")
-                Me.picturebox(23) = dbreader("Picturebox23")
-                Me.picturebox(24) = dbreader("Picturebox24")
-                Me.picturebox(25) = dbreader("Picturebox25")
-                Me.picturebox(26) = dbreader("Picturebox26")
-                Me.picturebox(27) = dbreader("Picturebox27")
-                Me.picturebox(28) = dbreader("Picturebox28")
-                Me.picturebox(29) = dbreader("Picturebox29")
-                Me.picturebox(30) = dbreader("Picturebox30")
-                Me.picturebox(31) = dbreader("Picturebox31")
-                Me.picturebox(32) = dbreader("Picturebox32")
-                Me.picturebox(33) = dbreader("Picturebox33")
-                Me.picturebox(34) = dbreader("Picturebox34")
-                Me.picturebox(35) = dbreader("Picturebox35")
-                Me.picturebox(36) = dbreader("Picturebox36")
-                Me.picturebox(37) = dbreader("Picturebox37")
-                Me.picturebox(38) = dbreader("Picturebox38")
-                Me.picturebox(39) = dbreader("Picturebox39")
-                Me.picturebox(40) = dbreader("Picturebox40")
-                Me.picturebox(41) = dbreader("Picturebox41")
-                Me.picturebox(42) = dbreader("Picturebox42")
-                Me.picturebox(43) = dbreader("Picturebox43")
-                Me.picturebox(44) = dbreader("Picturebox44")
-                Me.picturebox(45) = dbreader("Picturebox45")
-                Me.picturebox(46) = dbreader("Picturebox46")
-                Me.picturebox(47) = dbreader("Picturebox47")
-                Me.picturebox(48) = dbreader("Picturebox48")
-                Me.picturebox(49) = dbreader("Picturebox49")
-                Me.picturebox(50) = dbreader("Picturebox50")
-                Me.picturebox(51) = dbreader("Picturebox51")
-                Me.picturebox(52) = dbreader("Picturebox52")
-                Me.picturebox(53) = dbreader("Picturebox53")
-                Me.picturebox(54) = dbreader("Picturebox54")
-                Me.picturebox(55) = dbreader("Picturebox55")
-                Me.picturebox(56) = dbreader("Picturebox56")
-                Me.picturebox(57) = dbreader("Picturebox57")
-                Me.picturebox(58) = dbreader("Picturebox58")
-                Me.picturebox(59) = dbreader("Picturebox59")
-                Me.picturebox(60) = dbreader("Picturebox60")
-                Me.picturebox(61) = dbreader("Picturebox61")
-                Me.picturebox(62) = dbreader("Picturebox62")
-                Me.picturebox(63) = dbreader("Picturebox63")
-                Me.picturebox(64) = dbreader("Picturebox64")
-                Me.picturebox(65) = dbreader("Picturebox65")
-                Me.picturebox(66) = dbreader("Picturebox66")
-                Me.picturebox(67) = dbreader("Picturebox67")
-                Me.picturebox(68) = dbreader("Picturebox68")
-                Me.picturebox(69) = dbreader("Picturebox69")
-                Me.picturebox(70) = dbreader("Picturebox70")
-                Me.picturebox(71) = dbreader("Picturebox71")
-                Me.picturebox(72) = dbreader("Picturebox72")
-                Me.picturebox(73) = dbreader("Picturebox73")
-                Me.picturebox(74) = dbreader("Picturebox74")
-                Me.picturebox(75) = dbreader("Picturebox75")
-                Me.picturebox(76) = dbreader("Picturebox76")
-                Me.picturebox(77) = dbreader("Picturebox77")
-                Me.picturebox(78) = dbreader("Picturebox78")
-                Me.picturebox(79) = dbreader("Picturebox79")
-                Me.picturebox(80) = dbreader("Picturebox80")
-                Me.picturebox(81) = dbreader("Picturebox81")
-                Me.picturebox(82) = dbreader("Picturebox82")
-                Me.picturebox(83) = dbreader("Picturebox83")
-                Me.picturebox(84) = dbreader("Picturebox84")
-                Me.picturebox(85) = dbreader("Picturebox85")
-                Me.picturebox(86) = dbreader("Picturebox86")
-                Me.picturebox(87) = dbreader("Picturebox87")
-                Me.picturebox(88) = dbreader("Picturebox88")
-                Me.picturebox(89) = dbreader("Picturebox89")
-                Me.picturebox(90) = dbreader("Picturebox90")
-            End While
-            dbreader.Close()
-            RetrieveFrom = ""
-        End If
-        myconnection.Close()
+        'myconnection.Open()
+        'myOleCommand.ExecuteNonQuery()
+        'dbreader = myOleCommand.ExecuteReader()
+        'If dbreader.HasRows Then
+        '    While dbreader.Read()
+        '        Me.picturebox(1) = dbreader("Picturebox1")
+        '        Me.picturebox(2) = dbreader("Picturebox2")
+        '        Me.picturebox(3) = dbreader("Picturebox3")
+        '        Me.picturebox(4) = dbreader("Picturebox4")
+        '        Me.picturebox(5) = dbreader("Picturebox5")
+        '        Me.picturebox(6) = dbreader("Picturebox6")
+        '        Me.picturebox(7) = dbreader("Picturebox7")
+        '        Me.picturebox(8) = dbreader("Picturebox8")
+        '        Me.picturebox(9) = dbreader("Picturebox9")
+        '        Me.picturebox(10) = dbreader("Picturebox10")
+        '        Me.picturebox(11) = dbreader("Picturebox11")
+        '        Me.picturebox(12) = dbreader("Picturebox12")
+        '        Me.picturebox(13) = dbreader("Picturebox13")
+        '        Me.picturebox(14) = dbreader("Picturebox14")
+        '        Me.picturebox(15) = dbreader("Picturebox15")
+        '        Me.picturebox(16) = dbreader("Picturebox16")
+        '        Me.picturebox(17) = dbreader("Picturebox17")
+        '        Me.picturebox(18) = dbreader("Picturebox18")
+        '        Me.picturebox(19) = dbreader("Picturebox19")
+        '        Me.picturebox(20) = dbreader("Picturebox20")
+        '        Me.picturebox(21) = dbreader("Picturebox21")
+        '        Me.picturebox(22) = dbreader("Picturebox22")
+        '        Me.picturebox(23) = dbreader("Picturebox23")
+        '        Me.picturebox(24) = dbreader("Picturebox24")
+        '        Me.picturebox(25) = dbreader("Picturebox25")
+        '        Me.picturebox(26) = dbreader("Picturebox26")
+        '        Me.picturebox(27) = dbreader("Picturebox27")
+        '        Me.picturebox(28) = dbreader("Picturebox28")
+        '        Me.picturebox(29) = dbreader("Picturebox29")
+        '        Me.picturebox(30) = dbreader("Picturebox30")
+        '        Me.picturebox(31) = dbreader("Picturebox31")
+        '        Me.picturebox(32) = dbreader("Picturebox32")
+        '        Me.picturebox(33) = dbreader("Picturebox33")
+        '        Me.picturebox(34) = dbreader("Picturebox34")
+        '        Me.picturebox(35) = dbreader("Picturebox35")
+        '        Me.picturebox(36) = dbreader("Picturebox36")
+        '        Me.picturebox(37) = dbreader("Picturebox37")
+        '        Me.picturebox(38) = dbreader("Picturebox38")
+        '        Me.picturebox(39) = dbreader("Picturebox39")
+        '        Me.picturebox(40) = dbreader("Picturebox40")
+        '        Me.picturebox(41) = dbreader("Picturebox41")
+        '        Me.picturebox(42) = dbreader("Picturebox42")
+        '        Me.picturebox(43) = dbreader("Picturebox43")
+        '        Me.picturebox(44) = dbreader("Picturebox44")
+        '        Me.picturebox(45) = dbreader("Picturebox45")
+        '        Me.picturebox(46) = dbreader("Picturebox46")
+        '        Me.picturebox(47) = dbreader("Picturebox47")
+        '        Me.picturebox(48) = dbreader("Picturebox48")
+        '        Me.picturebox(49) = dbreader("Picturebox49")
+        '        Me.picturebox(50) = dbreader("Picturebox50")
+        '        Me.picturebox(51) = dbreader("Picturebox51")
+        '        Me.picturebox(52) = dbreader("Picturebox52")
+        '        Me.picturebox(53) = dbreader("Picturebox53")
+        '        Me.picturebox(54) = dbreader("Picturebox54")
+        '        Me.picturebox(55) = dbreader("Picturebox55")
+        '        Me.picturebox(56) = dbreader("Picturebox56")
+        '        Me.picturebox(57) = dbreader("Picturebox57")
+        '        Me.picturebox(58) = dbreader("Picturebox58")
+        '        Me.picturebox(59) = dbreader("Picturebox59")
+        '        Me.picturebox(60) = dbreader("Picturebox60")
+        '        Me.picturebox(61) = dbreader("Picturebox61")
+        '        Me.picturebox(62) = dbreader("Picturebox62")
+        '        Me.picturebox(63) = dbreader("Picturebox63")
+        '        Me.picturebox(64) = dbreader("Picturebox64")
+        '        Me.picturebox(65) = dbreader("Picturebox65")
+        '        Me.picturebox(66) = dbreader("Picturebox66")
+        '        Me.picturebox(67) = dbreader("Picturebox67")
+        '        Me.picturebox(68) = dbreader("Picturebox68")
+        '        Me.picturebox(69) = dbreader("Picturebox69")
+        '        Me.picturebox(70) = dbreader("Picturebox70")
+        '        Me.picturebox(71) = dbreader("Picturebox71")
+        '        Me.picturebox(72) = dbreader("Picturebox72")
+        '        Me.picturebox(73) = dbreader("Picturebox73")
+        '        Me.picturebox(74) = dbreader("Picturebox74")
+        '        Me.picturebox(75) = dbreader("Picturebox75")
+        '        Me.picturebox(76) = dbreader("Picturebox76")
+        '        Me.picturebox(77) = dbreader("Picturebox77")
+        '        Me.picturebox(78) = dbreader("Picturebox78")
+        '        Me.picturebox(79) = dbreader("Picturebox79")
+        '        Me.picturebox(80) = dbreader("Picturebox80")
+        '        Me.picturebox(81) = dbreader("Picturebox81")
+        '        Me.picturebox(82) = dbreader("Picturebox82")
+        '        Me.picturebox(83) = dbreader("Picturebox83")
+        '        Me.picturebox(84) = dbreader("Picturebox84")
+        '        Me.picturebox(85) = dbreader("Picturebox85")
+        '        Me.picturebox(86) = dbreader("Picturebox86")
+        '        Me.picturebox(87) = dbreader("Picturebox87")
+        '        Me.picturebox(88) = dbreader("Picturebox88")
+        '        Me.picturebox(89) = dbreader("Picturebox89")
+        '        Me.picturebox(90) = dbreader("Picturebox90")
+        '    End While
+        '    'dbreader.Close()
+        '    RetrieveFrom = ""
+        'End If
+        'myconnection.Close()
+
+        libDBCon.ExecGetSQL(sqlquery, sqlWhere)
+        For dtrCount As Integer = 0 To libDBCon.GetGridInfo().Rows.Count
+            Me.picturebox(dtrCount + 1) = libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("Picturebox" + (dtrCount + 1).ToString()).Ordinal).ToString()
+            'picCount += 1
+        Next
+        RetrieveFrom = ""
+
     End Sub
 
     Private Sub PictureBox1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox1.Click

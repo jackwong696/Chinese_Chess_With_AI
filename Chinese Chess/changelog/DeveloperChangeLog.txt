@@ -1,33 +1,39 @@
 ﻿Chinese Chess 
 
 Version 1.0.0.0 [20160903]
-- Project Migration from Old project. [Solve] 
-- Migrate database from ms access to ms sql server. [Solve] 
+- 01 - Project Migration from Old project. [Solve] 
+- 02 - Migrate database from ms access to ms sql server. [Solve] 
 
 Version 1.0.0.1 [20160904]
-- Create the database module. [Solve] 
+- 01 - Create the database module. [Solve] 
 
 Version 1.0.0.2 [20160909]
-- Create module Pieces picturebox. [In-Progress, Exist (Analyze for for simplicity)] 
-- Table userscore have some strange data. - check where it generated [Solve] 
-- Check datatable source. [Solve]  
+- 01 - Create module Pieces picturebox. [In-Progress, Exist (Analyze for for simplicity)] 
+- 02 - Table userscore have some strange data. - check where it generated [Solve] 
+- 03 - Check datatable source. [Solve]  
 
 Version 1.0.0.3 [20160911] 
-- Disable switch player button (button3) at form 1 startup, enable it after player select color. [Solve]  
-- Add Enum for players turns. [] 
-- Check all the require user control to disable when form 1 start. [Solve] 
-- Change all sql related to use libDbCon. [] 
+- 01 - Disable switch player button (button3) at form 1 startup, enable it after player select color. [Solve]  
+- 02 - Add Enum for players turns. [] 
+- 03 - Check all the require user control to disable when form 1 start. [Solve] 
+- 04 - Change all sql related to use libDbCon. [Solve] 
 
-Version 1.0.0.3 [20160911] 
--  
-- 
-- 
+Version 1.0.0.4 [20160916] 
+- 01 - Wrong records insert into TableNumber Table. (Increase TableID when create new table/game) [Solve] 
+- 02 - Wrong records show in movement list. [Same with 01] 
+- 03 - Wrong insert for first move in list(Show wrong).  
 
+Version 1.0.0.5 [20160916] 
+- 01 - Modify check mate - add check mate condition when general does not have move anymore.
+- 02 - 
 
+Version 1.0.0.6 [20160916]  
+- 01 - Add new features to get and show back the history table movement.
+- 02 - 
 
-
-
-
+Version 1.0.0.7 [20160916] 
+- 01 - 
+- 02 - 
 
 
 

@@ -246,23 +246,31 @@ Line1:  For i = 0 To 50
                     Exit For
                 End If
 
-                myconnection = New SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
+                'myconnection = New SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
                 'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
-                TmStr = "Select * from AttackOrProtectBy where CurrPic = " & MoveAvailable(i) & " and AttackOrProtect = ' Move Available ' and ByPic = " & PieceAbleToFill1(k)
-                myOleCommand = New SqlClient.SqlCommand(TmStr, myconnection)
+                TmStr = "Select * FROM AttackOrProtectBy "
+                ' "where CurrPic = " & MoveAvailable(i) & " and AttackOrProtect = ' Move Available ' and ByPic = " & PieceAbleToFill1(k)
+                'myOleCommand = New SqlClient.SqlCommand(TmStr, myconnection)
                 'myOleCommand = New OleDb.OleDbCommand(TmStr, myconnection)
-                myconnection.Open()
-                myOleCommand.ExecuteNonQuery()
-                dbreader = myOleCommand.ExecuteReader()
-                If dbreader.HasRows Then
-                    While dbreader.Read
-                        MoveNotAvailable(j) = dbreader("CurrPic")
-                        j = j + 1
-                    End While
-                Else
-                End If
-                dbreader.Close()
-                myconnection.Close()
+                'myconnection.Open()
+                'myOleCommand.ExecuteNonQuery()
+                'dbreader = myOleCommand.ExecuteReader()
+                'If dbreader.HasRows Then
+                '    While dbreader.Read
+                '        MoveNotAvailable(j) = dbreader("CurrPic")
+                '        j = j + 1
+                '    End While
+                'Else
+                'End If 
+                'dbreader.Close()
+                'myconnection.Close()
+
+                libDBCon.ExecGetSQL(TmStr, " WHERE CurrPic = " & MoveAvailable(i) & " AND AttackOrProtect = ' Move Available ' AND ByPic = " & PieceAbleToFill1(k))
+                For Each dtr As DataRow In libDBCon.GetGridInfo.Rows
+                    PieceAbleToFill1(j) = Convert.ToInt32(libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("CurrPic").Ordinal).ToString())
+                    j = j + 1
+                Next
+
             Next k
         Next i
 
@@ -308,33 +316,42 @@ Line1:  For i = 0 To 50
         'Dim myOleCommand As OleDb.OleDbCommand
         'Dim dbreader As OleDb.OleDbDataReader
 
-        Dim myconnection As System.Data.SqlClient.SqlConnection
-        Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        Dim dbreader As System.Data.SqlClient.SqlDataReader
+        'Dim myconnection As System.Data.SqlClient.SqlConnection
+        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
+        'Dim dbreader As System.Data.SqlClient.SqlDataReader
 
         Dim TmStr As String
 
         PiecePic = "Che"
         i = 1
-        myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
+
+        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
         'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
-        TmStr = "select * from PieceStatus where (PieceScore = 4 and PictureBoxColor = 'Black' and IsAttacked = 'True')"
-        myOleCommand = New System.Data.SqlClient.SqlCommand(TmStr, myconnection)
+        TmStr = " SELECT * FROM PieceStatus "
+        '" where (PieceScore = 4 and PictureBoxColor = 'Black' and IsAttacked = 'True')"
+        'myOleCommand = New System.Data.SqlClient.SqlCommand(TmStr, myconnection)
         'myOleCommand = New OleDb.OleDbCommand(TmStr, myconnection)
-        myconnection.Open()
-        myOleCommand.ExecuteNonQuery()
-        dbreader = myOleCommand.ExecuteReader()
-        If dbreader.HasRows Then
-            While dbreader.Read
-                CheLocation(i) = dbreader("PicNo")
-                i = i + 1
-            End While
-            MsgBox(CheLocation(1), MsgBoxStyle.OkOnly)
-            MsgBox(CheLocation(2), MsgBoxStyle.OkOnly)
-        Else
-        End If
-        dbreader.Close()
-        myconnection.Close()
+        'myconnection.Open()
+        'myOleCommand.ExecuteNonQuery()
+        'dbreader = myOleCommand.ExecuteReader()
+        'If dbreader.HasRows Then
+        '    While dbreader.Read
+        '        CheLocation(i) = dbreader("PicNo")
+        '        i = i + 1
+        '    End While
+        '    MsgBox(CheLocation(1), MsgBoxStyle.OkOnly)
+        '    MsgBox(CheLocation(2), MsgBoxStyle.OkOnly)
+        'Else
+        'End If
+        'dbreader.Close()
+        'myconnection.Close()
+
+        libDBCon.ExecGetSQL(TmStr, " WHERE (PieceScore = 4 AND PictureBoxColor = 'Black' AND IsAttacked = 'True')")
+        For Each dtr As DataRow In libDBCon.GetGridInfo().Rows
+            CheLocation(i) = Convert.ToInt32(libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("PicNo").Ordinal).ToString())
+            'CheLocation(i) = dbreader("PicNo")
+            i = i + 1
+        Next
 
         For i = 1 To 2
             CheckCurrPicAttackBy()
