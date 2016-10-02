@@ -54,6 +54,9 @@ Partial Class Form1
         Me.ListView1 = New System.Windows.Forms.ListView()
         Me.whitePlayerNameLbl = New System.Windows.Forms.Label()
         Me.blackPlayerNameLbl = New System.Windows.Forms.Label()
+        Me.Table_NumberTextBox = New System.Windows.Forms.TextBox()
+        Me.form3Btn = New System.Windows.Forms.Button()
+        Me.travelPic = New System.Windows.Forms.PictureBox()
         Me.blockMovementAreaPic = New System.Windows.Forms.PictureBox()
         Me.movementAreaPic = New System.Windows.Forms.PictureBox()
         Me.storePic = New System.Windows.Forms.PictureBox()
@@ -168,14 +171,12 @@ Partial Class Form1
         Me.PictureBox88 = New System.Windows.Forms.PictureBox()
         Me.PictureBox89 = New System.Windows.Forms.PictureBox()
         Me.PictureBox90 = New System.Windows.Forms.PictureBox()
-        Me.travelPic = New System.Windows.Forms.PictureBox()
-        Me.Table_NumberTextBox = New System.Windows.Forms.TextBox()
-        Me.form3Btn = New System.Windows.Forms.Button()
         MovementRecordLabel = New System.Windows.Forms.Label()
         ScoreLabel = New System.Windows.Forms.Label()
         UserNameLabel = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
+        CType(Me.travelPic, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.blockMovementAreaPic, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.movementAreaPic, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.storePic, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -290,7 +291,6 @@ Partial Class Form1
         CType(Me.PictureBox88, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox89, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.PictureBox90, System.ComponentModel.ISupportInitialize).BeginInit()
-        CType(Me.travelPic, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'MovementRecordLabel
@@ -596,6 +596,31 @@ Partial Class Form1
         Me.blackPlayerNameLbl.Name = "blackPlayerNameLbl"
         Me.blackPlayerNameLbl.Size = New System.Drawing.Size(0, 13)
         Me.blackPlayerNameLbl.TabIndex = 59
+        '
+        'Table_NumberTextBox
+        '
+        Me.Table_NumberTextBox.Location = New System.Drawing.Point(159, 519)
+        Me.Table_NumberTextBox.Name = "Table_NumberTextBox"
+        Me.Table_NumberTextBox.Size = New System.Drawing.Size(100, 20)
+        Me.Table_NumberTextBox.TabIndex = 63
+        '
+        'form3Btn
+        '
+        Me.form3Btn.Location = New System.Drawing.Point(457, 408)
+        Me.form3Btn.Name = "form3Btn"
+        Me.form3Btn.Size = New System.Drawing.Size(75, 23)
+        Me.form3Btn.TabIndex = 64
+        Me.form3Btn.Text = "form3"
+        Me.form3Btn.UseVisualStyleBackColor = True
+        '
+        'travelPic
+        '
+        Me.travelPic.Location = New System.Drawing.Point(668, 522)
+        Me.travelPic.Name = "travelPic"
+        Me.travelPic.Size = New System.Drawing.Size(38, 34)
+        Me.travelPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+        Me.travelPic.TabIndex = 62
+        Me.travelPic.TabStop = False
         '
         'blockMovementAreaPic
         '
@@ -1930,31 +1955,6 @@ Partial Class Form1
         Me.PictureBox90.TabIndex = 89
         Me.PictureBox90.TabStop = False
         '
-        'travelPic
-        '
-        Me.travelPic.Location = New System.Drawing.Point(668, 522)
-        Me.travelPic.Name = "travelPic"
-        Me.travelPic.Size = New System.Drawing.Size(38, 34)
-        Me.travelPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-        Me.travelPic.TabIndex = 62
-        Me.travelPic.TabStop = False
-        '
-        'Table_NumberTextBox
-        '
-        Me.Table_NumberTextBox.Location = New System.Drawing.Point(159, 519)
-        Me.Table_NumberTextBox.Name = "Table_NumberTextBox"
-        Me.Table_NumberTextBox.Size = New System.Drawing.Size(100, 20)
-        Me.Table_NumberTextBox.TabIndex = 63
-        '
-        'form3Btn
-        '
-        Me.form3Btn.Location = New System.Drawing.Point(457, 408)
-        Me.form3Btn.Name = "form3Btn"
-        Me.form3Btn.Size = New System.Drawing.Size(75, 23)
-        Me.form3Btn.TabIndex = 64
-        Me.form3Btn.Text = "form3"
-        Me.form3Btn.UseVisualStyleBackColor = True
-        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -2021,6 +2021,7 @@ Partial Class Form1
         Me.GroupBox1.PerformLayout()
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
+        CType(Me.travelPic, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.blockMovementAreaPic, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.movementAreaPic, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.storePic, System.ComponentModel.ISupportInitialize).EndInit()
@@ -2135,7 +2136,6 @@ Partial Class Form1
         CType(Me.PictureBox88, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox89, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.PictureBox90, System.ComponentModel.ISupportInitialize).EndInit()
-        CType(Me.travelPic, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 

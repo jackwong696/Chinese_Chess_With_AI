@@ -12,6 +12,8 @@ Public Class Form1
     Public picturebox(90) As String
 
     Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Me.Icon = My.Resources.chinese_chess_icon_small
+        Turn = "White"
         LoadHeader()
         ClearPicturebox()
         ClearPic()
@@ -46,11 +48,9 @@ Public Class Form1
     Private Sub ExitToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles ExitToolStripMenuItem.Click
         Me.Close()
     End Sub
-
     Private Sub AboutChineseChessV1ToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles AboutChineseChessV1ToolStripMenuItem.Click
         ChineseChessAboutBox.ShowDialog()
     End Sub
-
     Private Sub PlayToolStripMenuItem_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PlayToolStripMenuItem.Click, playBtn.Click
         Form2.ShowDialog()
 
@@ -66,12 +66,12 @@ Public Class Form1
         Me.toHorCBox.Enabled = True
         Me.toVerCBox.Enabled = True
     End Sub
-
     Private Sub exitBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles exitBtn.Click
         Me.Close()
     End Sub
 
     Private Sub moveBtn_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles moveBtn.Click
+
         Me.firstClickPic.Image = Me.nonePic.Image
         Me.secondClickPic.Image = Me.nonePic.Image
         positionOneColor = ""
@@ -89,19 +89,21 @@ Public Class Form1
         checkPositionOneColor()
         CheckPreviousPicColor()
         CheckTurns()
+
         ' do not erase
         'If OurAttackerLocation <> "" And EnemyAttackerLocation <> "" Then
         '    positionOne = OurAttackerLocation
         '    positionTwo = EnemyAttackerLocation
         '    MovePiece()
         'End If
+
         'If ((playerTurn = "1st") And (Turn = "Black")) Or ((playerTurn = "2nd") And (Turn = "White")) Then
         '    MsgBox("Not your turn", MsgBoxStyle.OkOnly)
-        '    ' AI Movement ' here
-        '    If Turn = "Black" Then
-        '        positionOne = "a1"
-        '        positionTwo = "a3"
-        '        MovePiece()
+        '    ' AI Movement ' here 
+        '    If Turn = "Black" Then 
+        '        positionOne = "a1" 
+        '        positionTwo = "a3" 
+        '        MovePiece() 
         '        Me.previousPic.Image = Me.blackChePic.Image
         '    ElseIf Turn = "White" Then
         '        positionOne = "a10"
@@ -117,6 +119,7 @@ Public Class Form1
             MsgBox("Invalid Turn", MsgBoxStyle.OkOnly)
             Exit Sub
         End If
+
 Line3:  GetPositionTwo()
         GetPositionOneTwo()
         If AIMovement = True Then
@@ -134,9 +137,9 @@ Line3:  GetPositionTwo()
             If sameColorBool = True Then
                 moveAllowBool = False
                 Dim strings As String
-                strings = "moveBool = " & moveBool & ", blockBool = " & blockBool & ", moveAllowBool = " & _
-                moveAllowBool & ControlChars.NewLine & ", PositionOne = " & positionOne & ", PositionTwo = " & _
-                positionTwo & ", PositionOneTwo = " & positionOneTwo & ", sameColor = " & sameColorBool & ", positiononecolor = " & positionOneColor & ", positiontwocolor = " & positionTwoColor
+                strings = "moveBool = " & moveBool & ", blockBool = " & blockBool & ", moveAllowBool = " &
+            moveAllowBool & ControlChars.NewLine & ", PositionOne = " & positionOne & ", PositionTwo = " &
+            positionTwo & ", PositionOneTwo = " & positionOneTwo & ", sameColor = " & sameColorBool & ", positiononecolor = " & positionOneColor & ", positiontwocolor = " & positionTwoColor
                 MsgBox(strings, MsgBoxStyle.OkOnly, "")
                 GoTo Line2
             Else
@@ -144,31 +147,27 @@ Line1:          CheckAllowBool()
 Line2:          MovePiece()
             End If
         End If
+
         ViewData()
         CheckMate()
     End Sub
 
+    Private Sub AIMove()
+        AIMovement = True
+        ' Check player moved piece.
+        GetPositionTwo()
+        GetPositionOneTwo()
+        ' Add some piece checking, possible move, attack pieces, defence pieces. (Find the best move).
+        ' Set the piece movement. 
+        ' move the piece. 
+        MovePiece()
+        ViewData()
+        CheckMate()
+        CheckTurns()
+        AIMovement = False
+    End Sub
+
     Private Sub InsertMovementRecord()
-
-        'Dim myconnection As System.Data.SqlClient.SqlConnection
-        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
-        'myOleCommand = New System.Data.SqlClient.SqlCommand(" SEELCT * FROM Record " & tableNumber, myconnection)
-
-        ''Dim myconnection As OleDb.OleDbConnection
-        ''Dim myOleCommand As OleDb.OleDbCommand
-        ''myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
-        ''myOleCommand = New OleDb.OleDbCommand("select * from Record" & tableNumber, myconnection)
-        'myconnection.Open()
-        'myOleCommand.ExecuteNonQuery()
-        'If Me.Turn = "White" Then
-        '    myOleCommand.CommandText = "insert into Record" & tableNumber & "(TableID, [No], [White Movement], [Black Movement]) values ( " & round & ", '" & positionOneTwo & "','')"
-        'ElseIf Me.Turn = "Black" Then
-        '    myOleCommand.CommandText = "update Record" & tableNumber & " set [Black Movement] = '" & positionOneTwo & "' where [No] = " & round
-        '    round = round + 1
-        'End If
-        'myOleCommand.ExecuteNonQuery()
-        'myconnection.Close()
 
         Dim query As String = ""
         If Me.Turn = "White" Then
@@ -182,27 +181,35 @@ Line2:          MovePiece()
     End Sub
 
     Private Sub CheckTurns()
-        If previousPicColor = "White" Then
-            Turn = "Black"
-        ElseIf (previousPicColor = "Black") Or (Me.previousPic.Image Is Me.nonePic.Image) Then
-            Turn = "White"
+        If AIMovement = False Then
+            If previousPicColor = "White" Then
+                Turn = "Black"
+            ElseIf (previousPicColor = "Black") Or (Me.previousPic.Image Is Me.nonePic.Image) Then
+                Turn = "White"
+            End If
+        Else
+            If Turn = "White" Then
+                Turn = "Black"
+            Else
+                Turn = "White"
+            End If
         End If
     End Sub
     Private Sub CheckPreviousPicColor()
-        If (Me.previousPic.Image Is Me.whiteChePic.Image) Or _
-        (Me.previousPic.Image Is Me.whiteMaPic.Image) Or _
-        (Me.previousPic.Image Is Me.whiteXiangPic.Image) Or _
-        (Me.previousPic.Image Is Me.whiteShiPic.Image) Or _
-        (Me.previousPic.Image Is Me.whiteJiangPic.Image) Or _
-        (Me.previousPic.Image Is Me.whitePaoPic.Image) Or _
+        If (Me.previousPic.Image Is Me.whiteChePic.Image) Or
+        (Me.previousPic.Image Is Me.whiteMaPic.Image) Or
+        (Me.previousPic.Image Is Me.whiteXiangPic.Image) Or
+        (Me.previousPic.Image Is Me.whiteShiPic.Image) Or
+        (Me.previousPic.Image Is Me.whiteJiangPic.Image) Or
+        (Me.previousPic.Image Is Me.whitePaoPic.Image) Or
         (Me.previousPic.Image Is Me.whiteZuPic.Image) Then
             previousPicColor = "White"
-        ElseIf (Me.previousPic.Image Is Me.blackChePic.Image) Or _
-        (Me.previousPic.Image Is Me.blackMaPic.Image) Or _
-        (Me.previousPic.Image Is Me.blackXiangPic.Image) Or _
-        (Me.previousPic.Image Is Me.blackShiPic.Image) Or _
-        (Me.previousPic.Image Is Me.blackJiangPic.Image) Or _
-        (Me.previousPic.Image Is Me.blackPaoPic.Image) Or _
+        ElseIf (Me.previousPic.Image Is Me.blackChePic.Image) Or
+        (Me.previousPic.Image Is Me.blackMaPic.Image) Or
+        (Me.previousPic.Image Is Me.blackXiangPic.Image) Or
+        (Me.previousPic.Image Is Me.blackShiPic.Image) Or
+        (Me.previousPic.Image Is Me.blackJiangPic.Image) Or
+        (Me.previousPic.Image Is Me.blackPaoPic.Image) Or
         (Me.previousPic.Image Is Me.blackBingPic.Image) Then
             previousPicColor = "Black"
         End If
@@ -238,46 +245,19 @@ Line2:          MovePiece()
         sqlQuery = ""
         sqlWhere = ""
 
-        'Dim myconnection As System.Data.SqlClient.SqlConnection
-        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
-
-        'Dim myconnection As OleDb.OleDbConnection
-        'Dim myOleCommand As OleDb.OleDbCommand
-
-        'Dim dbreader As System.Data.SqlClient.SqlDataReader
-        'Dim dbreader As OleDb.OleDbDataReader
         Dim itemAdd As ListViewItem
 
         If AIMovement = True Then
             Exit Sub
         End If
 
-        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
-        'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
         sqlQuery = " SELECT [White Movement], [Black Movement] FROM Record "
         sqlWhere = " WHERE TableID = " & tableNumber
-        ' WHERE TableID = " & tableNumber
-        'myOleCommand = New OleDb.OleDbCommand(sqlQuery, myconnection)
-        'myOleCommand = New System.Data.SqlClient.SqlCommand(sqlQuery, myconnection)
-        'myconnection.Open()
-        'myOleCommand.ExecuteNonQuery()
 
         Me.ListView1.Items.Clear()
-        'dbreader = myOleCommand.ExecuteReader()
-        'While dbreader.Read()
-        '    itemAdd = Me.ListView1.Items.Add(dbreader("White Movement"))
-        '    itemAdd.SubItems.Add(dbreader("Black Movement"))
-        '    'Dim row1 As String() = {dbreader("White Movement"), dbreader("Black Movement")}
-        '    'ListView1.Items.Add(dbreader("White Movement")).SubItems.AddRange(row1)
-        '    'ListView1.Items.Add(dbreader("White Movement"))
-        'End While
-        'dbreader.Close()
-        'myconnection.Close()
 
         libDBCon.ExecGetSQL(sqlQuery, sqlWhere)
         For Each dtr As DataRow In libDBCon.GetGridInfo.Rows
-            'itemAdd = Me.ListView1.Items.Add(libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("White Movement").Ordinal).ToString)
-            'itemAdd.SubItems.Add(libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("Black Movement").Ordinal).ToString)
             itemAdd = Me.ListView1.Items.Add(dtr.Item(libDBCon.GetGridInfo.Columns("White Movement").Ordinal).ToString())
             itemAdd.SubItems.Add(dtr.Item(libDBCon.GetGridInfo.Columns("Black Movement").Ordinal).ToString())
         Next
@@ -286,11 +266,9 @@ Line2:          MovePiece()
 
     Private Sub GetPositionOne()
         positionOne = Me.fromHorAlTxt.Text & Me.fromVerNumTxt.Text
-
     End Sub
     Private Sub GetPositionTwo()
         positionTwo = Me.toHorAlTxt.Text & Me.toVerNumTxt.Text
-
     End Sub
     Private Sub GetPositionOneTwo()
         positionOneTwo = positionOne + positionTwo
@@ -763,7 +741,7 @@ Line2:          MovePiece()
         End If
     End Sub
     Private Sub checkColor()
-        If (positionOneColor = "Black" And positionTwoColor = "Black") Or _
+        If (positionOneColor = "Black" And positionTwoColor = "Black") Or
         (positionOneColor = "White" And positionTwoColor = "White") Then
             sameColorBool = True
         Else
@@ -772,40 +750,40 @@ Line2:          MovePiece()
     End Sub
 
     Private Sub checkPositionOneColor()
-        If (Me.currentPic.Image Is Me.whiteZuPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteXiangPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteShiPic.Image) Or _
-        (Me.currentPic.Image Is Me.whitePaoPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteMaPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteJiangPic.Image) Or _
+        If (Me.currentPic.Image Is Me.whiteZuPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteXiangPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteShiPic.Image) Or
+        (Me.currentPic.Image Is Me.whitePaoPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteMaPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteJiangPic.Image) Or
         (Me.currentPic.Image Is Me.whiteChePic.Image) Then
             positionOneColor = "White"
-        ElseIf (Me.currentPic.Image Is Me.blackBingPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackXiangPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackShiPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackPaoPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackMaPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackJiangPic.Image) Or _
+        ElseIf (Me.currentPic.Image Is Me.blackBingPic.Image) Or
+        (Me.currentPic.Image Is Me.blackXiangPic.Image) Or
+        (Me.currentPic.Image Is Me.blackShiPic.Image) Or
+        (Me.currentPic.Image Is Me.blackPaoPic.Image) Or
+        (Me.currentPic.Image Is Me.blackMaPic.Image) Or
+        (Me.currentPic.Image Is Me.blackJiangPic.Image) Or
         (Me.currentPic.Image Is Me.blackChePic.Image) Then
             positionOneColor = "Black"
         End If
     End Sub
     Private Sub checkPositionTwoColor()
         'If positionTwoNonPicBool = False Then
-        If (Me.currentPic.Image Is Me.whiteZuPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteXiangPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteShiPic.Image) Or _
-        (Me.currentPic.Image Is Me.whitePaoPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteMaPic.Image) Or _
-        (Me.currentPic.Image Is Me.whiteJiangPic.Image) Or _
+        If (Me.currentPic.Image Is Me.whiteZuPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteXiangPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteShiPic.Image) Or
+        (Me.currentPic.Image Is Me.whitePaoPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteMaPic.Image) Or
+        (Me.currentPic.Image Is Me.whiteJiangPic.Image) Or
         (Me.currentPic.Image Is Me.whiteChePic.Image) Then
             positionTwoColor = "White"
-        ElseIf (Me.currentPic.Image Is Me.blackBingPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackXiangPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackShiPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackPaoPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackMaPic.Image) Or _
-        (Me.currentPic.Image Is Me.blackJiangPic.Image) Or _
+        ElseIf (Me.currentPic.Image Is Me.blackBingPic.Image) Or
+        (Me.currentPic.Image Is Me.blackXiangPic.Image) Or
+        (Me.currentPic.Image Is Me.blackShiPic.Image) Or
+        (Me.currentPic.Image Is Me.blackPaoPic.Image) Or
+        (Me.currentPic.Image Is Me.blackMaPic.Image) Or
+        (Me.currentPic.Image Is Me.blackJiangPic.Image) Or
         (Me.currentPic.Image Is Me.blackChePic.Image) Then
             positionTwoColor = "Black"
         End If
@@ -1033,6 +1011,7 @@ Line2:          MovePiece()
         ElseIf positionOne = "i10" Then
             CheckMaI10MovementArea()
         End If
+
     End Sub
     Public Sub CheckCheMovementArea()
         If positionOne = "a1" Then
@@ -6790,30 +6769,7 @@ Line2:          MovePiece()
 
     Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
 
-        'Dim myconnection As OleDb.OleDbConnection
-        'Dim myOleCommand As OleDb.OleDbCommand
-        'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
-        'myOleCommand = New OleDb.OleDbCommand("delete * from record", myconnection)
         Dim sqlQuery = " DELETE * FROM record "
-
-        'Dim myconnection As System.Data.SqlClient.SqlConnection
-        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
-        'myOleCommand = New System.Data.SqlClient.SqlCommand("DELETE * FROM record", myconnection)
-
-        'Try
-        '    'myconnection.Open()
-        '    'myOleCommand.ExecuteNonQuery()
-
-        '    'Me.TextBox1.Text = DatabaseDataSet.Record.field("")
-        '    'MsgBox("delete * from record table in database.")
-        'Catch myException As Exception
-        '    'MsgBox("Couldn't insert record: " + myException.ToString())
-        'Finally
-        '    'MsgBox("closing con")
-        '    'myconnection.Close()
-        'End Try
-        'Me.RecordTableAdapter.Fill(Me.ChineseChessDatabaseDataSet.Record)
 
         Try
             libDBCon.ExecPostSQL(sqlQuery, "")
@@ -6825,38 +6781,7 @@ Line2:          MovePiece()
 
     Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
 
-        'Dim myconnection As System.Data.SqlClient.SqlConnection
-        'Dim myolecommand As System.Data.SqlClient.SqlCommand
-        'Dim dbreader As System.Data.SqlClient.SqlDataReader
-        'myconnection = New System.Data.SqlClient.SqlConnection("server=desktop-jack;database=chinesechessdatabase;trusted_connection=true;")
-        'myolecommand = New System.Data.SqlClient.SqlCommand("select max([Table Number]) as tableNoMax from TableNumber", myconnection)
-
-        'Dim myconnection As OleDb.OleDbConnection
-        'Dim myOleCommand As OleDb.OleDbCommand
-        'Dim dbreader As OleDb.OleDbDataReader
-        'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
-        'myOleCommand = New OleDb.OleDbCommand("select max([Table Number]) as tableNoMax from TableNumber", myconnection)
-
-        'myconnection.Open()
-        'myolecommand.ExecuteNonQuery()
-        'dbreader = myolecommand.ExecuteReader()
-        'If dbreader.HasRows Then
-        '    While dbreader.Read()
-        '        Me.Table_NumberTextBox.Text = dbreader("tableNoMax")
-        '    End While
-        '    tableNumber = Me.Table_NumberTextBox.Text + 1
-        '    dbreader.Close()
-        'Else
-        '    MsgBox("Query return no row", MsgBoxStyle.OkOnly)
-        'End If
-        'myolecommand.CommandText = "create table Record" & tableNumber & "([ID] AUTOINCREMENT(1, 1) NOT NULL PRIMARY KEY ,[No] int,[White Movement] text(20), [Black Movement] text(20))"
-        'myolecommand.ExecuteNonQuery()
-        'myolecommand.CommandText = "insert into TableNumber values (" & tableNumber & ", " & tableNumber & ")"
-        'myolecommand.ExecuteNonQuery()
-        'myconnection.Close()
-
         libDBCon.ExecGetSQL("SELECT MAX([Table Number]) AS tableNoMax FROM TableNumber", "")
-        'tableNumber = Convert.ToInt32(Me.Table_NumberTextBox.Text) + 1
         tableNumber = libDBCon.GetGridInfo().Rows(0)(libDBCon.GetGridInfo.Columns("tableNoMax").Ordinal) + 1
         Table_NumberTextBox.Text = tableNumber.ToString()
 
@@ -6870,27 +6795,29 @@ Line2:          MovePiece()
     End Sub
 
     Private Sub CheckMate()
-        If Me.PictureBox4.Image IsNot Me.whiteJiangPic.Image And _
-        Me.PictureBox5.Image IsNot Me.whiteJiangPic.Image And _
-        Me.PictureBox6.Image IsNot Me.whiteJiangPic.Image And _
-        Me.PictureBox13.Image IsNot Me.whiteJiangPic.Image And _
-        Me.PictureBox14.Image IsNot Me.whiteJiangPic.Image And _
-        Me.PictureBox15.Image IsNot Me.whiteJiangPic.Image And _
-        Me.PictureBox22.Image IsNot Me.whiteJiangPic.Image And _
-        Me.PictureBox23.Image IsNot Me.whiteJiangPic.Image And _
+
+        ' checkmate when jiang is eliminate from castle. 
+        If Me.PictureBox4.Image IsNot Me.whiteJiangPic.Image And
+        Me.PictureBox5.Image IsNot Me.whiteJiangPic.Image And
+        Me.PictureBox6.Image IsNot Me.whiteJiangPic.Image And
+        Me.PictureBox13.Image IsNot Me.whiteJiangPic.Image And
+        Me.PictureBox14.Image IsNot Me.whiteJiangPic.Image And
+        Me.PictureBox15.Image IsNot Me.whiteJiangPic.Image And
+        Me.PictureBox22.Image IsNot Me.whiteJiangPic.Image And
+        Me.PictureBox23.Image IsNot Me.whiteJiangPic.Image And
         Me.PictureBox24.Image IsNot Me.whiteJiangPic.Image Then
             ' white checkmate
             MsgBox("CheckMate, Black win")
         End If
 
-        If Me.PictureBox67.Image IsNot Me.blackJiangPic.Image And _
-        Me.PictureBox68.Image IsNot Me.blackJiangPic.Image And _
-        Me.PictureBox69.Image IsNot Me.blackJiangPic.Image And _
-        Me.PictureBox76.Image IsNot Me.blackJiangPic.Image And _
-        Me.PictureBox77.Image IsNot Me.blackJiangPic.Image And _
-        Me.PictureBox78.Image IsNot Me.blackJiangPic.Image And _
-        Me.PictureBox85.Image IsNot Me.blackJiangPic.Image And _
-        Me.PictureBox86.Image IsNot Me.blackJiangPic.Image And _
+        If Me.PictureBox67.Image IsNot Me.blackJiangPic.Image And
+        Me.PictureBox68.Image IsNot Me.blackJiangPic.Image And
+        Me.PictureBox69.Image IsNot Me.blackJiangPic.Image And
+        Me.PictureBox76.Image IsNot Me.blackJiangPic.Image And
+        Me.PictureBox77.Image IsNot Me.blackJiangPic.Image And
+        Me.PictureBox78.Image IsNot Me.blackJiangPic.Image And
+        Me.PictureBox85.Image IsNot Me.blackJiangPic.Image And
+        Me.PictureBox86.Image IsNot Me.blackJiangPic.Image And
         Me.PictureBox87.Image IsNot Me.blackJiangPic.Image Then
             ' black checkmate
             MsgBox("CheckMate, white win")
@@ -6904,38 +6831,17 @@ Line2:          MovePiece()
     End Sub
 
     Private Sub SavePlayerInfo()
-
-        'Dim myconnection As System.Data.SqlClient.SqlConnection
-        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
-
-        'Dim myconnection As OleDb.OleDbConnection
-        'Dim myOleCommand As OleDb.OleDbCommand
         Dim sqlquery As String
-        'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
 
         sqlquery = "UPDATE userscore SET [score]= " & Me.ScoreTextBox.Text
-        ' & " where [username] = '" & Me.UserNameTextBox.Text & "'" 
         libDBCon.ExecPostSQL(sqlquery, " WHERE [username] = '" & Me.UserNameTextBox.Text & "'")
-        'myOleCommand = New OleDb.OleDbCommand(sqlquery, myconnection)
-        'myOleCommand = New SqlClient.SqlCommand(sqlquery, myconnection)
-        'myconnection.Open()
-        'myOleCommand.ExecuteNonQuery()
-        'myconnection.Close()
     End Sub
 
     Public Sub SavePieceLocation()
 
-        'Dim myconnection As System.Data.SqlClient.SqlConnection
-        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
-
-        'Dim myconnection As OleDb.OleDbConnection
-        'Dim myOleCommand As OleDb.OleDbCommand
         Dim sqlquery, SqlWhere As String
         sqlquery = ""
         SqlWhere = ""
-        'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
 
         If SavePurpose = "saveBeforeShowMA" Then
             SqlWhere = "' WHERE SaveType = 'saveBeforeShowMA' "
@@ -6951,148 +6857,28 @@ Line2:          MovePiece()
         "',picturebox61 = '" & picturebox(61) & "', picturebox62 = '" & picturebox(62) & "', picturebox63 = '" & picturebox(63) & "', picturebox64 = '" & picturebox(64) & "', picturebox65 = '" & picturebox(65) & "', picturebox66 = '" & picturebox(66) & "', picturebox67 = '" & picturebox(67) & "', picturebox68 = '" & picturebox(68) & "', picturebox69 = '" & picturebox(69) & "', picturebox70 = '" & picturebox(70) &
         "',picturebox71 = '" & picturebox(71) & "', picturebox72 = '" & picturebox(72) & "', picturebox73 = '" & picturebox(73) & "', picturebox74 = '" & picturebox(74) & "', picturebox75 = '" & picturebox(75) & "', picturebox76 = '" & picturebox(76) & "', picturebox77 = '" & picturebox(77) & "', picturebox78 = '" & picturebox(78) & "', picturebox79 = '" & picturebox(79) & "', picturebox80 = '" & picturebox(80) &
         "',picturebox81 = '" & picturebox(81) & "', picturebox82 = '" & picturebox(82) & "', picturebox83 = '" & picturebox(83) & "', picturebox84 = '" & picturebox(84) & "', picturebox85 = '" & picturebox(85) & "', picturebox86 = '" & picturebox(86) & "', picturebox87 = '" & picturebox(87) & "', picturebox88 = '" & picturebox(88) & "', picturebox89 = '" & picturebox(89) & "', picturebox90 = '" & picturebox(90)
-        '& SqlWhere
-        'myOleCommand = New OleDb.OleDbCommand(sqlquery, myconnection)
-        'myOleCommand = New SqlClient.SqlCommand(sqlquery, myconnection)
-        'MsgBox(sqlquery, MsgBoxStyle.OkOnly)
-        'myconnection.Open()
-        'myOleCommand.ExecuteNonQuery()
-        'myconnection.Close()
 
         libDBCon.ExecGetSQL(sqlquery, SqlWhere)
-
-
         SavePurpose = ""
+
     End Sub
     Public Sub RetriveSavePieceLocation()
 
-        'Dim myconnection As System.Data.SqlClient.SqlConnection
-        'Dim myOleCommand As System.Data.SqlClient.SqlCommand
-        'myconnection = New System.Data.SqlClient.SqlConnection("Server=DESKTOP-JACK;Database=ChineseChessDatabase;Trusted_Connection=True;")
-        'myOleCommand = New System.Data.SqlClient.SqlCommand("DELETE * FROM record", myconnection)
-        'Dim dbreader As SqlClient.SqlDataReader
-
-        'Dim myconnection As OleDb.OleDbConnection
-        'Dim myOleCommand As OleDb.OleDbCommand
-        'Dim dbreader As OleDb.OleDbDataReader
         Dim sqlquery, sqlWhere As String
-        'Dim picCount As Integer = 1
+
+        sqlquery = ""
         sqlWhere = ""
-        'myconnection = New OleDb.OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=|DataDirectory|\ChineseChessDatabase.mdb")
+
         If RetrieveFrom = "saveBeforeShowMA" Then
             sqlWhere = " WHERE SaveType = 'saveBeforeShowMA' "
         ElseIf RetrieveFrom = "saveBeforeSimulating" Then
             sqlWhere = " WHERE SaveType = 'saveBeforeSimulating' "
         End If
         sqlquery = " SELECT * FROM SavePieceLocation "
-        'sqlWhere = " WHERE SaveType = '" & sqlWhere & "'"
-        'myOleCommand = New SqlClient.SqlCommand(sqlquery, myconnection)
-        'myOleCommand = New OleDb.OleDbCommand(sqlquery, myconnection)
-        'myconnection.Open()
-        'myOleCommand.ExecuteNonQuery()
-        'dbreader = myOleCommand.ExecuteReader()
-        'If dbreader.HasRows Then
-        '    While dbreader.Read()
-        '        Me.picturebox(1) = dbreader("Picturebox1")
-        '        Me.picturebox(2) = dbreader("Picturebox2")
-        '        Me.picturebox(3) = dbreader("Picturebox3")
-        '        Me.picturebox(4) = dbreader("Picturebox4")
-        '        Me.picturebox(5) = dbreader("Picturebox5")
-        '        Me.picturebox(6) = dbreader("Picturebox6")
-        '        Me.picturebox(7) = dbreader("Picturebox7")
-        '        Me.picturebox(8) = dbreader("Picturebox8")
-        '        Me.picturebox(9) = dbreader("Picturebox9")
-        '        Me.picturebox(10) = dbreader("Picturebox10")
-        '        Me.picturebox(11) = dbreader("Picturebox11")
-        '        Me.picturebox(12) = dbreader("Picturebox12")
-        '        Me.picturebox(13) = dbreader("Picturebox13")
-        '        Me.picturebox(14) = dbreader("Picturebox14")
-        '        Me.picturebox(15) = dbreader("Picturebox15")
-        '        Me.picturebox(16) = dbreader("Picturebox16")
-        '        Me.picturebox(17) = dbreader("Picturebox17")
-        '        Me.picturebox(18) = dbreader("Picturebox18")
-        '        Me.picturebox(19) = dbreader("Picturebox19")
-        '        Me.picturebox(20) = dbreader("Picturebox20")
-        '        Me.picturebox(21) = dbreader("Picturebox21")
-        '        Me.picturebox(22) = dbreader("Picturebox22")
-        '        Me.picturebox(23) = dbreader("Picturebox23")
-        '        Me.picturebox(24) = dbreader("Picturebox24")
-        '        Me.picturebox(25) = dbreader("Picturebox25")
-        '        Me.picturebox(26) = dbreader("Picturebox26")
-        '        Me.picturebox(27) = dbreader("Picturebox27")
-        '        Me.picturebox(28) = dbreader("Picturebox28")
-        '        Me.picturebox(29) = dbreader("Picturebox29")
-        '        Me.picturebox(30) = dbreader("Picturebox30")
-        '        Me.picturebox(31) = dbreader("Picturebox31")
-        '        Me.picturebox(32) = dbreader("Picturebox32")
-        '        Me.picturebox(33) = dbreader("Picturebox33")
-        '        Me.picturebox(34) = dbreader("Picturebox34")
-        '        Me.picturebox(35) = dbreader("Picturebox35")
-        '        Me.picturebox(36) = dbreader("Picturebox36")
-        '        Me.picturebox(37) = dbreader("Picturebox37")
-        '        Me.picturebox(38) = dbreader("Picturebox38")
-        '        Me.picturebox(39) = dbreader("Picturebox39")
-        '        Me.picturebox(40) = dbreader("Picturebox40")
-        '        Me.picturebox(41) = dbreader("Picturebox41")
-        '        Me.picturebox(42) = dbreader("Picturebox42")
-        '        Me.picturebox(43) = dbreader("Picturebox43")
-        '        Me.picturebox(44) = dbreader("Picturebox44")
-        '        Me.picturebox(45) = dbreader("Picturebox45")
-        '        Me.picturebox(46) = dbreader("Picturebox46")
-        '        Me.picturebox(47) = dbreader("Picturebox47")
-        '        Me.picturebox(48) = dbreader("Picturebox48")
-        '        Me.picturebox(49) = dbreader("Picturebox49")
-        '        Me.picturebox(50) = dbreader("Picturebox50")
-        '        Me.picturebox(51) = dbreader("Picturebox51")
-        '        Me.picturebox(52) = dbreader("Picturebox52")
-        '        Me.picturebox(53) = dbreader("Picturebox53")
-        '        Me.picturebox(54) = dbreader("Picturebox54")
-        '        Me.picturebox(55) = dbreader("Picturebox55")
-        '        Me.picturebox(56) = dbreader("Picturebox56")
-        '        Me.picturebox(57) = dbreader("Picturebox57")
-        '        Me.picturebox(58) = dbreader("Picturebox58")
-        '        Me.picturebox(59) = dbreader("Picturebox59")
-        '        Me.picturebox(60) = dbreader("Picturebox60")
-        '        Me.picturebox(61) = dbreader("Picturebox61")
-        '        Me.picturebox(62) = dbreader("Picturebox62")
-        '        Me.picturebox(63) = dbreader("Picturebox63")
-        '        Me.picturebox(64) = dbreader("Picturebox64")
-        '        Me.picturebox(65) = dbreader("Picturebox65")
-        '        Me.picturebox(66) = dbreader("Picturebox66")
-        '        Me.picturebox(67) = dbreader("Picturebox67")
-        '        Me.picturebox(68) = dbreader("Picturebox68")
-        '        Me.picturebox(69) = dbreader("Picturebox69")
-        '        Me.picturebox(70) = dbreader("Picturebox70")
-        '        Me.picturebox(71) = dbreader("Picturebox71")
-        '        Me.picturebox(72) = dbreader("Picturebox72")
-        '        Me.picturebox(73) = dbreader("Picturebox73")
-        '        Me.picturebox(74) = dbreader("Picturebox74")
-        '        Me.picturebox(75) = dbreader("Picturebox75")
-        '        Me.picturebox(76) = dbreader("Picturebox76")
-        '        Me.picturebox(77) = dbreader("Picturebox77")
-        '        Me.picturebox(78) = dbreader("Picturebox78")
-        '        Me.picturebox(79) = dbreader("Picturebox79")
-        '        Me.picturebox(80) = dbreader("Picturebox80")
-        '        Me.picturebox(81) = dbreader("Picturebox81")
-        '        Me.picturebox(82) = dbreader("Picturebox82")
-        '        Me.picturebox(83) = dbreader("Picturebox83")
-        '        Me.picturebox(84) = dbreader("Picturebox84")
-        '        Me.picturebox(85) = dbreader("Picturebox85")
-        '        Me.picturebox(86) = dbreader("Picturebox86")
-        '        Me.picturebox(87) = dbreader("Picturebox87")
-        '        Me.picturebox(88) = dbreader("Picturebox88")
-        '        Me.picturebox(89) = dbreader("Picturebox89")
-        '        Me.picturebox(90) = dbreader("Picturebox90")
-        '    End While
-        '    'dbreader.Close()
-        '    RetrieveFrom = ""
-        'End If
-        'myconnection.Close()
 
         libDBCon.ExecGetSQL(sqlquery, sqlWhere)
         For dtrCount As Integer = 0 To libDBCon.GetGridInfo().Rows.Count
             Me.picturebox(dtrCount + 1) = libDBCon.GetGridInfo.Rows(0)(libDBCon.GetGridInfo.Columns("Picturebox" + (dtrCount + 1).ToString()).Ordinal).ToString()
-            'picCount += 1
         Next
         RetrieveFrom = ""
 
@@ -7120,7 +6906,9 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
+
     End Sub
     Private Sub PictureBox2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox2.Click
 
@@ -7143,7 +6931,9 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
+
     End Sub
     Private Sub PictureBox3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox3.Click
 
@@ -7166,7 +6956,9 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
+
     End Sub
     Private Sub PictureBox4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox4.Click
 
@@ -7189,7 +6981,9 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
+
     End Sub
     Private Sub PictureBox5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox5.Click
 
@@ -7212,7 +7006,9 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
+
     End Sub
     Private Sub PictureBox6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox6.Click
 
@@ -7235,7 +7031,9 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
+
     End Sub
     Private Sub PictureBox7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox7.Click
 
@@ -7258,6 +7056,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox8.Click
@@ -7281,6 +7080,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox9_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox9.Click
@@ -7304,6 +7104,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox18_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox18.Click
@@ -7327,6 +7128,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox17_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox17.Click
@@ -7350,6 +7152,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox16_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox16.Click
@@ -7373,6 +7176,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox15_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox15.Click
@@ -7396,6 +7200,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox14_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox14.Click
@@ -7419,6 +7224,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox13_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox13.Click
@@ -7442,6 +7248,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox12_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox12.Click
@@ -7465,6 +7272,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox11_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox11.Click
@@ -7488,6 +7296,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox10_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox10.Click
@@ -7511,6 +7320,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox28_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox28.Click
@@ -7534,6 +7344,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox29_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox29.Click
@@ -7557,6 +7368,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox30_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox30.Click
@@ -7580,6 +7392,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox31_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox31.Click
@@ -7603,6 +7416,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox32_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox32.Click
@@ -7626,6 +7440,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox33_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox33.Click
@@ -7649,6 +7464,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox34_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox34.Click
@@ -7672,6 +7488,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox35_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox35.Click
@@ -7695,6 +7512,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox36_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox36.Click
@@ -7718,6 +7536,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox27_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox27.Click
@@ -7741,6 +7560,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox26_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox26.Click
@@ -7764,6 +7584,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox25_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox25.Click
@@ -7787,6 +7608,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox24_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox24.Click
@@ -7810,6 +7632,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox23_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox23.Click
@@ -7833,6 +7656,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox22_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox22.Click
@@ -7856,6 +7680,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox21_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox21.Click
@@ -7879,6 +7704,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox20_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox20.Click
@@ -7902,6 +7728,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox19_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox19.Click
@@ -7925,6 +7752,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox46_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox46.Click
@@ -7948,6 +7776,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox47_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox47.Click
@@ -7971,6 +7800,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox48_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox48.Click
@@ -7994,6 +7824,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox49_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox49.Click
@@ -8017,6 +7848,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox50_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox50.Click
@@ -8040,6 +7872,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox51_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox51.Click
@@ -8063,6 +7896,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox52_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox52.Click
@@ -8086,6 +7920,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox53_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox53.Click
@@ -8109,6 +7944,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox54_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox54.Click
@@ -8132,6 +7968,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox45_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox45.Click
@@ -8155,6 +7992,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox44_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox44.Click
@@ -8178,6 +8016,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox43_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox43.Click
@@ -8201,6 +8040,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox42_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox42.Click
@@ -8224,6 +8064,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox41_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox41.Click
@@ -8247,6 +8088,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox40_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox40.Click
@@ -8270,6 +8112,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox39_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox39.Click
@@ -8293,6 +8136,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox38_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox38.Click
@@ -8316,6 +8160,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox37_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox37.Click
@@ -8339,6 +8184,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox64_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox64.Click
@@ -8362,6 +8208,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox65_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox65.Click
@@ -8385,6 +8232,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox66_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox66.Click
@@ -8408,6 +8256,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox67_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox67.Click
@@ -8431,6 +8280,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox68_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox68.Click
@@ -8454,6 +8304,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox69_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox69.Click
@@ -8477,6 +8328,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox70_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox70.Click
@@ -8500,6 +8352,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox71_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox71.Click
@@ -8523,6 +8376,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox72_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox72.Click
@@ -8546,6 +8400,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox63_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox63.Click
@@ -8569,6 +8424,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox62_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox62.Click
@@ -8592,6 +8448,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox61_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox61.Click
@@ -8615,6 +8472,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox60_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox60.Click
@@ -8638,6 +8496,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox59_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox59.Click
@@ -8661,6 +8520,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox58_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox58.Click
@@ -8684,6 +8544,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox57_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox57.Click
@@ -8707,6 +8568,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox56_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox56.Click
@@ -8730,6 +8592,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox55_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox55.Click
@@ -8753,6 +8616,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox82_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox82.Click
@@ -8776,6 +8640,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox83_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox83.Click
@@ -8799,6 +8664,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox84_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox84.Click
@@ -8822,6 +8688,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox85_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox85.Click
@@ -8845,6 +8712,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox86_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox86.Click
@@ -8868,6 +8736,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox87_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox87.Click
@@ -8891,6 +8760,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox88_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox88.Click
@@ -8914,6 +8784,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox89_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox89.Click
@@ -8937,6 +8808,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
 
@@ -8967,6 +8839,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox81_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox81.Click
@@ -8990,6 +8863,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox80_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox80.Click
@@ -9013,6 +8887,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox79_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox79.Click
@@ -9036,6 +8911,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox78_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox78.Click
@@ -9059,6 +8935,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox77_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox77.Click
@@ -9082,6 +8959,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox76_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox76.Click
@@ -9105,6 +8983,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox75_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox75.Click
@@ -9128,6 +9007,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox74_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox74.Click
@@ -9151,6 +9031,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
     Private Sub PictureBox73_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles PictureBox73.Click
@@ -9174,6 +9055,7 @@ Line2:          MovePiece()
             RetriveSavePieceLocation()
             RetrivePiece()
             moveBtn.PerformClick()
+            AIMove()
         End If
     End Sub
 
