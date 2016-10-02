@@ -14,3 +14,19 @@ C:\Users\User\Documents\WWJ Software Solution\Projects\Chinese Chess\Chinese Che
 C:\Users\User\Documents\WWJ Software Solution\Projects\Chinese Chess\Chinese Chess\obj\Debug\Chinese Chess.exe
 C:\Users\User\Documents\WWJ Software Solution\Projects\Chinese Chess\Chinese Chess\obj\Debug\Chinese Chess.xml
 C:\Users\User\Documents\WWJ Software Solution\Projects\Chinese Chess\Chinese Chess\obj\Debug\Chinese Chess.pdb
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\bin\Debug\Chinese Chess.exe.config
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese Chess.exe
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese Chess.xml
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese Chess.pdb
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\bin\Debug\Chinese Chess.exe
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\bin\Debug\Chinese Chess.pdb
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\bin\Debug\Chinese Chess.xml
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese Chess.vbprojResolveAssemblyReference.cache
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese_Chess.AttackOrProtectBy.resources
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese_Chess.ChineseChessAboutBox.resources
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese_Chess.ChineseChessSplashScreen1.resources
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese_Chess.Form1.resources
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese_Chess.Form2.resources
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese_Chess.Resources.resources
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese_Chess.ProtectedPieceForm.resources
+C:\Users\User\Documents\WWJ Software Solution\GitHub_Projects\Chinese_Chess_With_AI\Chinese Chess\obj\Debug\Chinese Chess.vbproj.GenerateResource.Cache
